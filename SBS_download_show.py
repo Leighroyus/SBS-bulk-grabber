@@ -42,7 +42,7 @@ def download_show(video_ID,filename):
 
     # don't download if file already exists
     if os.path.isfile(filename.replace(":","/") + ".ts"):
-        print("\n" + filename.replace(":","/") + ".ts" + " already, moving to the next file.")
+        print("\n" + filename.replace(":","/") + ".ts" + " already exists, moving to the next file.")
         return
 
     url = "http://www.sbs.com.au/ondemand/video/single/" + video_ID
