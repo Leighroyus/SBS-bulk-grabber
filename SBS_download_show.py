@@ -2,15 +2,14 @@
 # Original source code licence: https://bitbucket.org/delx/webdl/src/ef87849c131516a07815205f546a5f5cc6fae91e/LICENSE
 
 from lxml import html
-import requests
 import lxml.etree
 import lxml.html
-import urllib
-import io
+from urllib.parse import urlparse
+from urllib.parse import urlunparse
 import json
-import urlparse
 import subprocess
 import os.path
+from urllib.request import urlretrieve
 
 NS = {
     "smil": "http://www.w3.org/2005/SMIL21/Language",
@@ -31,12 +30,12 @@ def get_player_params(doc):
 
 def ensure_scheme(url):
 
-    parts = urlparse.urlparse(url)
+    parts = urlparse(url)
     if parts.scheme:
         return url
     parts = list(parts)
     parts[0] = "http"
-    return urlparse.urlunparse(parts)
+    return urlunparse(parts)
 
 def download_show(video_ID,filename):
 
@@ -47,7 +46,8 @@ def download_show(video_ID,filename):
 
     url = "http://www.sbs.com.au/ondemand/video/single/" + video_ID
 
-    urllib.urlretrieve(url, "video.html")
+    #urllib.urlretrieve(url, "video.html")
+    urlretrieve(url, "video.html")
     f = open("video.html", "r")
     doc = lxml.html.parse(f, lxml.html.HTMLParser(encoding="utf-8", recover=True))
 
@@ -56,7 +56,7 @@ def download_show(video_ID,filename):
     release_url = player_params["releaseUrls"]["html"]
     release_url = ensure_scheme(release_url)
 
-    urllib.urlretrieve(release_url, "release.xml")
+    urlretrieve(release_url, "release.xml")
     f = open("release.xml", "r")
     doc = lxml.etree.parse(f, lxml.etree.XMLParser(encoding="utf-8", recover=True))
 
@@ -73,5 +73,5 @@ def download_show(video_ID,filename):
     ]
 
     p = subprocess.Popen(cmd)
-    ret = p.wait()
+    return p.wait()
 
